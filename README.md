@@ -1,16 +1,77 @@
 # LeadIntel Pro: AI-Powered Lead Scoring Dashboard
 
-Automatically scores leads on a 0-100 scale, predicting conversion probability based on engagement metrics.
+An AI-powered lead scoring dashboard that uses a Random Forest machine learning model to evaluate customer engagement data and predict lead conversion probability.
 
-## Features
+## 🚀 Live Demo
 
-- **Batch Scoring**: Upload CSV with 100+ leads, score all instantly
-- **Single Lead Scoring**: Manually enter prospect info, get instant prediction
-- **Analytics Dashboard**: View score distribution and feature importance
-- **Multi-Client Support**: Different thresholds for different clients
-- **Priority Classification**: URGENT, HOT, WARM, ENGAGING, MODERATE, NURTURE, COLD, MONITOR
+👉 [Open LeadIntel Pro](https://lead-scoring-project-ejnuczyhngmq839y4bwwub.streamlit.app/)
 
-## Model Performance
+Automatically scores leads on a 0-100 scale based on engagement metrics and helps prioritize leads according to their predicted conversion potential.
+
+---
+
+## 📌 Project Overview
+
+LeadIntel Pro is a machine learning-based lead scoring application designed to help identify and prioritize potential customers based on their engagement behaviour.
+
+The application analyzes customer engagement data and generates a lead score on a 0-100 scale along with a corresponding priority category.
+
+The project demonstrates the application of Machine Learning and Python in a practical lead prioritization use case.
+
+---
+
+## ✨ Features
+
+- **Batch Scoring** – Upload a CSV file containing multiple leads and score them at once
+- **Single Lead Scoring** – Enter individual prospect information and receive an instant prediction
+- **Analytics Dashboard** – View lead score distribution and feature importance
+- **Multi-Client Support** – Apply different scoring thresholds for different clients
+- **Priority Classification** – Classify leads into priority categories
+- **Interactive Dashboard** – Use the Streamlit interface to interact with the model
+
+---
+
+## 🛠️ Tech Stack
+
+- Python
+- Streamlit
+- Scikit-learn
+- Random Forest Classifier
+- Pandas
+- NumPy
+- Git & GitHub
+
+---
+
+## ⚙️ How It Works
+
+1. Customer engagement information is provided as input.
+2. The application processes the required features.
+3. The trained Random Forest model analyzes the lead.
+4. A lead score is generated on a 0-100 scale.
+5. The lead is assigned a priority category.
+6. The results are displayed through the Streamlit dashboard.
+
+---
+
+## 🤖 Machine Learning Model
+
+### Algorithm
+
+**Random Forest Classifier**
+
+### Model Details
+
+- Algorithm: Random Forest
+- Framework: Scikit-learn
+- Input: Customer engagement features
+- Output: Lead score and prediction
+- Trained model: `lead_scorer.pkl`
+- Feature configuration: `model_columns.json`
+
+---
+
+## 📊 Model Performance
 
 | Metric | Score |
 |--------|-------|
@@ -19,81 +80,27 @@ Automatically scores leads on a 0-100 scale, predicting conversion probability b
 | Recall | 88.7% |
 | F1-Score | 89.0% |
 
-Trained on 9,240 lead records with 45 engagement features.
+The model was trained using customer engagement data and multiple engagement-related features.
 
-## Installation
+---
 
-### Requirements
-- Python 3.8+
-- pip
+## 📸 Application Preview
 
-### Setup
+A screenshot of the deployed application can be added here.
 
-1. Clone repository:
-```bash
-git clone https://github.com/YOUR-USERNAME/lead-scoring-project.git
-cd lead-scoring-project
-```
+---
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+## 📁 Project Structure
 
-3. Run locally:
-```bash
-streamlit run leadintel_pro.py
-```
-
-4. Open browser to: `http://localhost:8501`
-
-## How to Use
-
-### Batch Scoring
-1. Click "Batch Scoring" tab
-2. Upload CSV file with lead data
-3. Click "Score All Leads"
-4. View results and download
-
-### Single Lead
-1. Click "Single Lead" tab
-2. Enter: website visits, time on site, page views, company name
-3. Click "Score This Lead"
-4. See instant prediction and recommendation
-
-### Analytics
-1. View lead score distribution
-2. Check top converting factors
-3. Compare client performance
-
-## Files
-
-- `leadintel_pro.py` - Main Streamlit application
-- `lead_scorer.pkl` - Trained RandomForest model
-- `requirements.txt` - Python dependencies
-- `sample_leads.csv` - Sample data for testing
-- `model_columns.json` - Model column configuration
-
-## Model Details
-
-- **Algorithm**: RandomForest Classifier
-- **Trees**: 100
-- **Training Records**: 9,240
-- **Features**: 45 engagement signals
-- **Framework**: Scikit-learn
-
-### Top 5 Features by Importance
-
-1. Website Visits (25%)
-2. Time on Site (22%)
-3. Email Engagement (20%)
-4. Page Views (18%)
-5. Lead Source (15%)
-
-## Author
-
-Kavya Gupta (2024)
-
-## License
-
-MIT License - Open source project
+```text
+lead-scoring-project/
+│
+├── data/
+│
+├── leadintel_pro.py
+├── lead_scorer.pkl
+├── model_columns.json
+├── config.toml
+├── requirements.txt
+├── README.md
+└── .gitignore
