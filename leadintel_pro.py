@@ -144,6 +144,16 @@ div[data-baseweb="input"]:focus-within, div[data-baseweb="select"]:focus-within 
 .stDownloadButton > button p {{ color: {ink} !important; }}
 
 /* Popovers (Thresholds) render in their own container — force light styling explicitly */
+[data-testid="stPopover"] > div > button, [data-testid="stPopover"] button {{
+    background-color: {card_bg} !important;
+    color: {ink} !important;
+    border: 1px solid {line} !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+}}
+[data-testid="stPopover"] button p, [data-testid="stPopover"] button span, [data-testid="stPopover"] button div {{ color: {ink} !important; }}
+[data-testid="stPopover"] button:hover {{ border-color: {pink} !important; }}
 [data-testid="stPopoverBody"] {{
     background-color: {card_bg} !important;
     color: {ink} !important;
@@ -446,8 +456,8 @@ def metric_card_button(count, label, color, key, filter_value):
         st.rerun()
 
 # ============= TABS =============
-tab_dash, tab_batch, tab_single, tab_compare, tab_analytics, tab_performance = st.tabs(
-    ["Dashboard", "Batch Score", "Single Lead", "Compare Leads", "Analytics", "Client Performance"]
+tab_dash, tab_batch, tab_single, tab_analytics, tab_performance = st.tabs(
+    ["Dashboard", "Batch Score", "Single Lead", "Analytics", "Client Performance"]
 )
 
 # ============= DASHBOARD =============
@@ -723,47 +733,6 @@ with tab_single:
         st.caption("Session-only history — resets when the app restarts, not a persistent database.")
         st.dataframe(pd.DataFrame(st.session_state.single_lead_history), use_container_width=True, hide_index=True)
 
-# ============= COMPARE LEADS =============
-with tab_compare:
-    st.subheader(f"Compare Leads — {selected_client}")
-    df_active = st.session_state.client_data.get(selected_client)
-
-    if df_active is None:
-        st.info("No scored leads yet for this client. Score some leads in **Batch Score** first.")
-    else:
-        name_col = 'Company' if 'Company' in df_active.columns else None
-        options = df_active[name_col].tolist() if name_col else [f"Lead #{i+1}" for i in range(len(df_active))]
-        picked = st.multiselect("Select 2-3 leads to compare", options, max_selections=3)
-
-        if len(picked) >= 2:
-            if name_col:
-                compare_df = df_active[df_active[name_col].isin(picked)].drop_duplicates(subset=name_col)
-            else:
-                compare_df = df_active.iloc[[options.index(p) for p in picked]]
-
-            cols = st.columns(len(compare_df))
-            for col, (_, row) in zip(cols, compare_df.iterrows()):
-                label, color, tint = tier_for(row['Score'], thresholds)
-                with col:
-                    display_name = row[name_col] if name_col else "Lead"
-                    st.markdown(f"""
-                    <div style="background:{card_bg}; border:1px solid {line}; border-top:4px solid {color};
-                                border-radius:14px; padding:18px; text-align:center;">
-                        <h4 style="margin:0;">{display_name}</h4>
-                        <div style="font-size:32px; font-weight:800; color:{color}; margin:10px 0;">{row['Score']}%</div>
-                        <span class="tier-badge" style="background:{tint}; color:{color};">{label}</span>
-                        <hr style="margin:14px 0; border-color:{line};">
-                        <p style="text-align:left; font-size:0.85rem; color:{gray_mid};">
-                            Visits: {row.get('TotalVisits','—')}<br>
-                            Time on site: {row.get('Total Time Spent on Website','—')}s<br>
-                            Source: {row.get('Lead Source','—')}<br>
-                            Last activity: {row.get('Last Activity','—')}
-                        </p>
-                    </div>
-                    """, unsafe_allow_html=True)
-        else:
-            st.caption("Pick at least 2 leads above to see them side by side.")
-
 # ============= ANALYTICS =============
 with tab_analytics:
     st.subheader(f"Analytics — {selected_client}")
@@ -775,33 +744,33 @@ with tab_analytics:
         col1, col2 = st.columns(2)
         with col1:
             fig_dist = go.Figure(data=[go.Histogram(x=df_active['Score'], nbinsx=20, marker=dict(color=pink))])
-            fig_dist.update_layout(title="Score Distribution", xaxis_title="Score", yaxis_title="Count",
+            fig_dist.update_layout(title=dict(text="Score Distribution", font=dict(color=ink, size=16)), xaxis_title="Score", yaxis_title="Count",
                                     template="plotly_white", paper_bgcolor=bg, plot_bgcolor=bg, font=dict(color=ink))
-            st.plotly_chart(fig_dist, use_container_width=True)
+            st.plotly_chart(fig_dist, use_container_width=True, theme=None)
         with col2:
             if 'Lead Source' in df_active.columns:
                 sc = df_active['Lead Source'].value_counts()
                 fig_source = go.Figure(data=[go.Bar(x=sc.index, y=sc.values, marker=dict(color=purple))])
-                fig_source.update_layout(title="Leads by Source", xaxis_title="Source", yaxis_title="Count",
+                fig_source.update_layout(title=dict(text="Leads by Source", font=dict(color=ink, size=16)), xaxis_title="Source", yaxis_title="Count",
                                           template="plotly_white", paper_bgcolor=bg, plot_bgcolor=bg, font=dict(color=ink))
-                st.plotly_chart(fig_source, use_container_width=True)
+                st.plotly_chart(fig_source, use_container_width=True, theme=None)
 
         col3, col4 = st.columns(2)
         with col3:
             if 'Lead Origin' in df_active.columns:
                 oc = df_active['Lead Origin'].value_counts()
                 fig_origin = go.Figure(data=[go.Bar(x=oc.index, y=oc.values, marker=dict(color=cyan))])
-                fig_origin.update_layout(title="Leads by Origin", xaxis_title="Origin", yaxis_title="Count",
+                fig_origin.update_layout(title=dict(text="Leads by Origin", font=dict(color=ink, size=16)), xaxis_title="Origin", yaxis_title="Count",
                                           template="plotly_white", paper_bgcolor=bg, plot_bgcolor=bg, font=dict(color=ink))
-                st.plotly_chart(fig_origin, use_container_width=True)
+                st.plotly_chart(fig_origin, use_container_width=True, theme=None)
         with col4:
             a1 = int((df_active['Score'] > thresholds["a"]).sum())
             b1 = int(((df_active['Score'] > thresholds["b"]) & (df_active['Score'] <= thresholds["a"])).sum())
             c1 = int((df_active['Score'] <= thresholds["b"]).sum())
             fig_pie = go.Figure(data=[go.Pie(labels=['Grade A', 'Grade B', 'Grade C'], values=[a1, b1, c1],
                                               marker=dict(colors=[pink, amber, gray_light]))])
-            fig_pie.update_layout(title="Grade Breakdown", template="plotly_white", paper_bgcolor=bg, plot_bgcolor=bg, font=dict(color=ink))
-            st.plotly_chart(fig_pie, use_container_width=True)
+            fig_pie.update_layout(title=dict(text="Grade Breakdown", font=dict(color=ink, size=16)), template="plotly_white", paper_bgcolor=bg, plot_bgcolor=bg, font=dict(color=ink))
+            st.plotly_chart(fig_pie, use_container_width=True, theme=None)
 
         st.write("")
         m1, m2, m3 = st.columns(3)
